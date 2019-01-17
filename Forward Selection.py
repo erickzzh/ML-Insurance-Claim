@@ -41,40 +41,13 @@ regressor.fit(X_train,y_train)
 #predicting the test set results 
 y_pred = regressor.predict(X_test)
 
-'''-----Automatic Backward Elimination-----'''
-
-import statsmodels.formula.api as sm
-    
-SL = 0.05
-p_max = 1
-X = np.append(arr = np.ones((1338,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
-X_opt = X[:, [0, 1, 2, 3, 4, 5]]
-X_opt = X_opt.astype(float)
-while(p_max>SL):
-    regressor_OLS = sm.OLS(endog = y,exog = X_opt).fit()
-    p_array = regressor_OLS.pvalues
-    p_max = p_array.max()
-    if(p_max > SL):
-        ind_rem = np.where(p_array==p_max)[0][0]
-        X_opt = np.delete(X_opt,ind_rem, 1)
-        
-print(X_opt)
-
 '''automatic forward selection'''
 SL = 0.05
 p_min = 0
-#X = np.append(arr = np.ones((50,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
+X = np.append(arr = np.ones((1338,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
 columnToKeep = []
 columnToCheck = [i for i in range(0,len(X[0]-1))]
 X = X.astype(float)
-
-regressor_OLS = sm.OLS(endog = y,exog = X).fit()
-p_array = regressor_OLS.pvalues
-p_min = p_array.min()
-
-columnWithSmallestP = np.where(p_array==p_min)[0][0]
-columnToKeep.append(columnWithSmallestP)
-columnToCheck.remove(columnWithSmallestP)
 
 while(p_min<SL):
     models = {}
