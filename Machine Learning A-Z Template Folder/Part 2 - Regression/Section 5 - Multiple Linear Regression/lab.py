@@ -139,7 +139,7 @@ print(regressor_OLS.summary())
 '''-----Automatic Backward Elimination-----'''
 
 import statsmodels.formula.api as sm
-'''       
+    
 SL = 0.05
 p_max = 1
 X = np.append(arr = np.ones((50,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
@@ -153,13 +153,13 @@ while(p_max>SL):
         ind_rem = np.where(p_array==p_max)[0][0]
         X_opt = np.delete(X_opt,ind_rem, 1)
         
-#print(X_opt)
-'''
+print(X_opt)
+
 
 '''forward selection'''
 SL = 0.05
 p_min = 0
-X = np.append(arr = np.ones((50,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
+#X = np.append(arr = np.ones((50,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
 columnToKeep = []
 columnToCheck = [i for i in range(0,len(X[0]-1))]
 X = X.astype(float)
@@ -169,22 +169,18 @@ p_array = regressor_OLS.pvalues
 p_min = p_array.min()
 
 columnWithSmallestP = np.where(p_array==p_min)[0][0]
-print(columnWithSmallestP)
 columnToKeep.append(columnWithSmallestP)
 columnToCheck.remove(columnWithSmallestP)
 
-while(columnToCheck):
+while(p_min<SL):
     models = {}
-    regressor_OLS = sm.OLS(endog = y,exog = X[ : ,columnToCheck]).fit()
-    
+
     for i in range(0,len(columnToCheck)):
-        models[columnToCheck[i]] = regressor_OLS.pvalues[i]
+        regressor_OLS = sm.OLS(endog = y,exog = X[ : ,columnToKeep + [columnToCheck[i]]]).fit()
+        models[columnToCheck[i]] = regressor_OLS.pvalues[-1]
         
-    print(models)
+
     columnWithSmallestP = min(models, key=models.get)
-    print(regressor_OLS.summary())
-    print(columnWithSmallestP)
-    
     p_min = models[columnWithSmallestP]
     if(p_min <= SL):
         columnToKeep.append(columnWithSmallestP)
@@ -193,34 +189,9 @@ while(columnToCheck):
         pass 
 print( X[ : ,columnToKeep])
   
+  
 
 
-
-
-#WHYYYYYYY FUCK ME
-def ForwardSelection(X, Y, sigLvl=0.05):
-    columnsToKeep = []
-    columnsToCheck = [i for i in range(X.shape[1])]
-        
-    models = getPValuesOfIndividualColumns(X, Y, columnsToCheck)
-    columnWithSmallestP = min(models, key=models.get)
-    columnsToKeep.append(columnWithSmallestP)
-    columnsToCheck.remove(columnWithSmallestP)
-                
-    while(columnsToCheck):
-        models = {}
-        for i in columnsToCheck:
-            model = sm.OLS(endog=Y, exog=X[ : ,columnsToKeep + [i]]).fit()
-            models[i] = model.pvalues[-1]
-        
-        columnWithSmallestP = min(models, key=models.get)
-        if(models[columnWithSmallestP] <= sigLvl):
-            columnsToKeep.append(columnWithSmallestP)
-            columnsToCheck.remove(columnWithSmallestP)
-        else:
-            break
-            
-    return X[ : ,columnsToKeep]
 
 
 
