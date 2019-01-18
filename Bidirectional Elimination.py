@@ -36,7 +36,7 @@ regressor.fit(X_train,y_train)
 #predicting the test set results 
 y_pred = regressor.predict(X_test)
 
-'''-----Automatic Backward Elimination-----'''
+'''-----Automatic Bidirectional Elimination-----'''
 
 import statsmodels.formula.api as sm
     
