@@ -62,6 +62,6 @@ while(p_min<SL):
     if(p_min <= SL):
         columnToKeep.append(columnWithSmallestP)
         columnToCheck.remove(columnWithSmallestP)
-    else:
-        pass 
-print( X[ : ,columnToKeep])
+
+print(columnToKeep) 
+print( X[ : ,columnToKeep]) 

@@ -43,6 +43,7 @@ import statsmodels.formula.api as sm
 SLENTER,SLEXIT = 0.05,0.05
 X = np.append(arr = np.ones((1338,1)).astype(int), values = X ,axis = 1 ) #axis = 0 add a line, axis = 1 add a coloumn
 columnToKeep = []
+columnWithBiggestPPre = -1
 columnToCheck = [i for i in range(0,len(X[0]))]
 X = X.astype(float)
 pEnterMin = 0
@@ -76,9 +77,19 @@ while(pEnterMin<SLENTER or pLeaveMax>SLEXIT):
     
     if(pLeaveMax > SLEXIT):
         columnToKeep.remove(columnWithBiggestP)
-        columnToCheck.append(columnWithBiggestP) 
+        columnToCheck.append(columnWithBiggestP)
+        
+        '''When a predictor is smaller than SLENTER but causes one of the 
+        predictors in columnToKeep to be bigger than SLEXIT will cause this 
+        while loop to be an infinite loop. The following code will fix corner 
+        case'''
+        if(columnWithBiggestPPre == columnWithBiggestP ):
+            break
+        else:
+            columnWithBiggestPPre = columnWithBiggestP
     
     
+print(columnToKeep) 
 print( X[ : ,columnToKeep])  
 
 
